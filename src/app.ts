@@ -3,10 +3,10 @@ import express, {
   type Request,
   type Response,
 } from "express";
-import { pool } from "./db";
 import { userRoute } from "./modules/user/user.route";
 import { profileRoute } from "./modules/profile/profile.route";
 import { issueRoute } from "./modules/issue/issue.route";
+import { authRoute } from "./modules/auth/auth.route";
 const app: Application = express();
 app.use(express.json());
 
@@ -21,5 +21,6 @@ app.get("/api", (req: Request, res: Response) => {
 app.use("/api/users", userRoute);
 app.use("/api/profile", profileRoute);
 app.use("/api/issues", issueRoute);
+app.use("/api/auth", authRoute);
 
 export default app;
