@@ -1,34 +1,34 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service";
 
-
 const signupUser = async (req: Request, res: Response) => {
-  try{
+  try {
     const result = await authService.signupUserIntoDb(req.body);
     console.log(result);
     res.status(201).json({
       success: true,
-      message: "User signed up successfully",
+      message: "User registered successfully",
       data: result,
     });
-  }
-  catch(error: any){
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: error.message,
       error: error,
     });
   }
-}
+};
 
 const loginUser = async (req: Request, res: Response) => {
   try {
     const result = await authService.loginUserIntoDb(req.body);
-    console.log(result);
     res.status(200).json({
       success: true,
-      message: "User logged in successfully",
-      data: { accessToken: result },
+      message: "Login successful",
+      data: {
+        token: result,
+        user: req.user,
+      },
     });
   } catch (error: any) {
     res.status(500).json({

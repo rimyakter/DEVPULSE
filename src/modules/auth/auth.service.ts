@@ -48,8 +48,11 @@ const loginUserIntoDb = async (payload: {
     //Token generation logic can be added here (e.g., JWT)
     const jwtPayload = {
       id: user.id,
+      name: user.name,
       email: user.email,
       role: user.role,
+      created_at: user.created_at,
+      updated_at: user.updated_at,
     };
 
     const accessToken = jwt.sign(jwtPayload, config.jwtSecret, {
@@ -58,7 +61,10 @@ const loginUserIntoDb = async (payload: {
 
     console.log("Access Token:", accessToken);
 
-    return accessToken;
+    return {
+  token: accessToken,
+  user: jwtPayload,
+};
   } catch (error) {
     throw new Error("Error logging in user: " + (error as Error).message);
   }
