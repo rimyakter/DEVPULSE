@@ -35,7 +35,14 @@ const createIssue = async (req: Request, res: Response) => {
 
 const getAllIssues = async (req: Request, res: Response) => {
   try {
-    const result = await issueService.getAllIssuesFromDb();
+    const { sort, type, status } = req.query;
+
+    const result = await issueService.getAllIssuesFromDb({
+      sort: sort as string,
+      type: type as string,
+      status: status as string,
+    });
+
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -47,7 +54,7 @@ const getAllIssues = async (req: Request, res: Response) => {
       statusCode: 500,
       success: false,
       message: error.message,
-      error: error,
+      error,
     });
   }
 };
