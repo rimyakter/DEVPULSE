@@ -120,8 +120,41 @@ const getSingleIssueFromDb = async (issueId: string) => {
   };
 };
 
-const updateIssueIntoDb = async (issueId: string, payload: IIssue) => {
+const updateIssueIntoDb = async (
+  issueId: string,
+  payload: IIssue,
+  user: { id: string; role: string },
+) => {
+  // 1. Fetch existing issue (required for authorization)
+  const issueResult = await pool.query(
+    `
+    SELECT id, reporter_id, status
+    FROM issues
+    WHERE id = $1
+    `,
+    [issueId],
+  );
+
+  const issue = issueResult.rows[0];
+
+  if (!issue) {
+    throw new Error("Issue not found");
+  }
+
+  // 2. Authorization logic
+  const isMaintainer = user.role === "maintainer";
+  const isOwner = issue.reporter_id === user.id;
+  const isOpen = issue.status === "open";
+
+  if (!isMaintainer && !(isOwner && isOpen)) {
+    const err: any = new Error("Forbidden: You cannot update this issue");
+    err.statusCode = 403;
+    throw err;
+  }
+
+  // 3. Perform update
   const { title, description, type, status } = payload;
+
   const result = await pool.query(
     `
       UPDATE issues
@@ -136,6 +169,7 @@ const updateIssueIntoDb = async (issueId: string, payload: IIssue) => {
     `,
     [title, description, type, status, issueId],
   );
+
   return result;
 };
 

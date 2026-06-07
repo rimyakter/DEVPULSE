@@ -93,10 +93,13 @@ const getSingleIssue = async (req: Request, res: Response) => {
 const updateIssue = async (req: Request, res: Response) => {
   try {
     const issueId = req.params.id;
+
     const result = await issueService.updateIssueIntoDb(
       issueId as string,
-      req.body as IIssue,
+      req.body,
+      req.user as { id: string; role: string }, // 👈 required for authorization logic
     );
+
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -105,10 +108,10 @@ const updateIssue = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     sendResponse(res, {
-      statusCode: 500,
+      statusCode: error.statusCode || 500,
       success: false,
       message: error.message,
-      error: error,
+      error,
     });
   }
 };
