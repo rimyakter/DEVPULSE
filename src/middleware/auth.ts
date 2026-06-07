@@ -3,7 +3,7 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { pool } from "../db";
 
-const auth = () => {
+const auth = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
@@ -28,6 +28,15 @@ const auth = () => {
         return res.status(404).json({
           status: "false",
           message: "User not found",
+        });
+      }
+
+      //role-based access control
+
+      if (roles.length > 0 && !roles.includes(user.role)) {
+        return res.status(403).json({
+          status: "false",
+          message: "Forbidden Access",
         });
       }
 
