@@ -57,18 +57,14 @@ const loginUserIntoDb = async (payload: {
       expiresIn: "1d",
     });
 
-    
-
     return {
-  token: accessToken,
-  user: jwtPayload,
-  
-};
+      token: accessToken,
+      user: jwtPayload,
+    };
   } catch (error) {
     throw new Error("Error logging in user: " + (error as Error).message);
   }
 };
-
 
 export const authService = {
   loginUserIntoDb,

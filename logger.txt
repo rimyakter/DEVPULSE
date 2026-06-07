@@ -255,3 +255,16 @@ Method : PUT - Url: /api/issues/1 - Time: 2026-06-07T18:28:45.351Z
 Method : PUT - Url: /api/issues/10 - Time: 2026-06-07T18:28:51.575Z
 Method : PUT - Url: /api/issues/15 - Time: 2026-06-07T18:29:05.671Z
 Method : PUT - Url: /api/issues/16 - Time: 2026-06-07T18:29:10.735Z
+Method : PUT - Url: /api/issues/16 - Time: 2026-06-07T18:30:17.116Z
+Method : DELETE - Url: /api/issues/16 - Time: 2026-06-07T18:30:22.324Z
+Method : POST - Url: /api/auth/login - Time: 2026-06-07T18:30:31.901Z
+Method : DELETE - Url: /api/issues/16 - Time: 2026-06-07T18:30:56.086Z
+Method : DELETE - Url: /api/issues/17 - Time: 2026-06-07T18:31:01.131Z
+Method : DELETE - Url: /api/issues/14 - Time: 2026-06-07T18:31:05.313Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:38:22.501Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:39:52.230Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:40:16.884Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:45:00.619Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:46:19.112Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:46:44.388Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:47:07.751Z
