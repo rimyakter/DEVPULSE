@@ -82,10 +82,42 @@ const getAllIssuesFromDb = async (filters: IssueFilters) => {
 
 const getSingleIssueFromDb = async (issueId: string) => {
   const result = await pool.query(
-    `SELECT id, title, description, type, status, reporter_id, created_at, updated_at FROM issues WHERE id = $1`,
+    `
+    SELECT 
+      id,
+      title,
+      description,
+      type,
+      status,
+      reporter_id,
+      created_at,
+      updated_at
+    FROM issues 
+    WHERE id = $1
+    `,
     [issueId],
   );
-  return result;
+
+  const issue = result.rows[0];
+  if (!issue) return null;
+
+  const userResult = await pool.query(
+    `
+    SELECT id, name, role
+    FROM users
+    WHERE id = $1
+    `,
+    [issue.reporter_id],
+  );
+
+  const reporter = userResult.rows[0] || null;
+
+  const { reporter_id, ...cleanIssue } = issue;
+
+  return {
+    ...cleanIssue,
+    reporter,
+  };
 };
 
 const updateIssueIntoDb = async (issueId: string, payload: IIssue) => {
