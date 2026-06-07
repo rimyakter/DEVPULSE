@@ -1,19 +1,19 @@
 import type { Request, Response } from "express";
-import { pool } from "../../db";
 import { userService } from "./user.service";
+import sendResponse from "../../utility/sendResponse";
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const result = await userService.createUserIntoDB(req.body);
-
-    res.status(201).json({
+    sendResponse(res, {
+      statusCode: 201,
       success: true,
       message: "User created successfully!",
       data: result.rows[0],
     });
   } catch (error: any) {
-    console.error("Error creating user:", error);
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
       error: error,
@@ -24,14 +24,16 @@ const createUser = async (req: Request, res: Response) => {
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const result = await userService.getAllUsersFromDB();
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Users retrieved successfully!",
       data: result.rows,
     });
   } catch (error: any) {
     console.error("Error retrieving users:", error);
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
       error: error,
@@ -45,13 +47,15 @@ const getSingleUser = async (req: Request, res: Response) => {
     const result = await userService.getSingleUserFromDB(userId as string);
 
     if (result.rows.length === 0) {
-      res.status(404).json({
+      sendResponse(res, {
+        statusCode: 404,
         success: false,
         message: "User not Found!",
         data: {},
       });
     } else {
-      res.status(200).json({
+      sendResponse(res, {
+        statusCode: 200,
         success: true,
         message: "User retrieved successfully!",
         data: result.rows[0],
@@ -59,7 +63,8 @@ const getSingleUser = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.error("Error retrieving user:", error);
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
       error: error,
@@ -77,13 +82,15 @@ const updateUser = async (req: Request, res: Response) => {
       role,
     });
     if (result.rows.length === 0) {
-      res.status(404).json({
+      sendResponse(res, {
+        statusCode: 404,
         success: false,
         message: "User not Found!",
         data: {},
       });
     } else {
-      res.status(200).json({
+      sendResponse(res, {
+        statusCode: 200,
         success: true,
         message: "User updated successfully!",
         data: result.rows[0],
@@ -91,7 +98,8 @@ const updateUser = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.error("Error updating user:", error);
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
       error: error,
@@ -105,13 +113,15 @@ const deleteUser = async (req: Request, res: Response) => {
     const result = await userService.deleteUserFromDB(userId as string);
 
     if (result.rows.length === 0) {
-      res.status(404).json({
+      sendResponse(res, {
+        statusCode: 404,
         success: false,
         message: "User not Found!",
         data: {},
       });
     } else {
-      res.status(200).json({
+      sendResponse(res, {
+        statusCode: 200,
         success: true,
         message: "User deleted successfully!",
         data: result.rows[0],
@@ -119,7 +129,8 @@ const deleteUser = async (req: Request, res: Response) => {
     }
   } catch (error: any) {
     console.error("Error deleting user:", error);
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
       message: error.message,
       error: error,

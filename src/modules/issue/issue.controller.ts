@@ -1,20 +1,34 @@
 import type { Request, Response } from "express";
 import { issueService } from "./issue.service";
 import type { IIssue } from "./issue.interface";
+import sendResponse from "../../utility/sendResponse";
 
 const createIssue = async (req: Request, res: Response) => {
   try {
-    const result = await issueService.createIssueIntoDb(req.body);
-    res.status(201).json({
+    const reporter_id = req.user?.id;
+    if (!reporter_id) {
+      return sendResponse(res, {
+        statusCode: 401,
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const result = await issueService.createIssueIntoDb({
+      ...req.body,
+      reporter_id,
+    } as IIssue);
+    sendResponse(res, {
+      statusCode: 201,
       success: true,
       message: "Issue created successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
-      message: "Server error",
-      error: error.message,
+      message: error.message,
+      error: error,
     });
   }
 };
@@ -22,16 +36,18 @@ const createIssue = async (req: Request, res: Response) => {
 const getAllIssues = async (req: Request, res: Response) => {
   try {
     const result = await issueService.getAllIssuesFromDb();
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Issues retrieved successfully",
       data: result.rows,
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
-      message: "Server error",
-      error: error.message,
+      message: error.message,
+      error: error,
     });
   }
 };
@@ -41,21 +57,25 @@ const getSingleIssue = async (req: Request, res: Response) => {
   try {
     const result = await issueService.getSingleIssueFromDb(issueId as string);
     if (result.rows.length === 0) {
-      return res.status(404).json({
+      return sendResponse(res, {
+        statusCode: 404,
         success: false,
         message: "Issue not found",
+        data: {},
       });
     }
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Issue retrieved successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
-      message: "Server error",
-      error: error.message,
+      message: error.message,
+      error: error,
     });
   }
 };
@@ -67,35 +87,38 @@ const updateIssue = async (req: Request, res: Response) => {
       issueId as string,
       req.body as IIssue,
     );
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Issue updated successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
-      message: "Server error",
-      error: error.message,
+      message: error.message,
+      error: error,
     });
   }
 };
 
-
 const deleteIssue = async (req: Request, res: Response) => {
-   const issueId = req.params.id;
+  const issueId = req.params.id;
   try {
     const result = await issueService.deleteIssueFromDb(issueId as string);
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: 200,
       success: true,
       message: "Issue deleted successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
-    res.status(500).json({
+    sendResponse(res, {
+      statusCode: 500,
       success: false,
-      message: "Server error",
-      error: error.message,
+      message: error.message,
+      error: error,
     });
   }
 };
