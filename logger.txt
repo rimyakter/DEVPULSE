@@ -156,3 +156,8 @@ Method : POST - Url: /api/auth/login - Time: 2026-06-07T11:45:32.447Z
 Method : GET - Url: /api/users - Time: 2026-06-07T11:45:52.385Z
 Method : POST - Url: /api/auth/login - Time: 2026-06-07T11:46:30.152Z
 Method : GET - Url: /api/users - Time: 2026-06-07T11:46:46.763Z
+Method : POST - Url: /api/auth/login - Time: 2026-06-07T11:54:22.877Z
+Method : GET - Url: /api/users - Time: 2026-06-07T11:54:42.643Z
+Method : POST - Url: /api/auth/login - Time: 2026-06-07T11:54:51.518Z
+Method : GET - Url: /api/users - Time: 2026-06-07T11:55:08.877Z
+Method : POST - Url: /api/auth/signup - Time: 2026-06-07T11:55:27.162Z

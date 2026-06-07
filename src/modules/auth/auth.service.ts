@@ -69,13 +69,8 @@ const loginUserIntoDb = async (payload: {
   }
 };
 
-const generateRefreshToken = async (token: string) => {
-
-  
-};
 
 export const authService = {
   loginUserIntoDb,
   signupUserIntoDb,
-  generateRefreshToken
 };
