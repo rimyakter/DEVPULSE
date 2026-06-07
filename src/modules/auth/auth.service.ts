@@ -36,8 +36,6 @@ const loginUserIntoDb = async (payload: {
 
     const user = userData.rows[0];
 
-    console.log(user);
-
     //compare passwords
     const matchPassword = await bcrypt.compare(password, user.password);
 
@@ -59,18 +57,25 @@ const loginUserIntoDb = async (payload: {
       expiresIn: "1d",
     });
 
-    console.log("Access Token:", accessToken);
+    
 
     return {
   token: accessToken,
   user: jwtPayload,
+  
 };
   } catch (error) {
     throw new Error("Error logging in user: " + (error as Error).message);
   }
 };
 
+const generateRefreshToken = async (token: string) => {
+
+  
+};
+
 export const authService = {
   loginUserIntoDb,
   signupUserIntoDb,
+  generateRefreshToken
 };

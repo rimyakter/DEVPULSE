@@ -8,7 +8,9 @@ import { profileRoute } from "./modules/profile/profile.route";
 import { issueRoute } from "./modules/issue/issue.route";
 import { authRoute } from "./modules/auth/auth.route";
 import logger from "./middleware/logger";
+
 const app: Application = express();
+
 app.use(express.json());
 
 app.use(logger);
