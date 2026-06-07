@@ -20,9 +20,11 @@ const loginUserIntoDb = async (payload: {
 
     const user = userData.rows[0];
 
+    console.log(user);
+
     //compare passwords
     const matchPassword = await bcrypt.compare(password, user.password);
-    
+
     if (!matchPassword) {
       throw new Error("Invalid credentials");
     }
@@ -33,15 +35,14 @@ const loginUserIntoDb = async (payload: {
       email: user.email,
       role: user.role,
     };
+
     const accessToken = jwt.sign(jwtPayload, config.jwtSecret, {
       expiresIn: "1d",
     });
 
+    console.log("Access Token:", accessToken);
+
     return accessToken;
-
-
-
-
   } catch (error) {
     throw new Error("Error logging in user: " + (error as Error).message);
   }
