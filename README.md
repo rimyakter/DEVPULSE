@@ -1,204 +1,158 @@
 # 🚼 DevPulse
 
-**Internal Tech Issue & Feature Tracker**
+## Internal Issue & Feature Tracking API
 
-DevPulse is a collaborative platform for software teams to report bugs, suggest features, and coordinate resolutions efficiently using a role-based workflow system.
-
----
-
-## 🛠️ Technology Stack
-
-| Technology   | Note                                                              |
-| ------------ | ----------------------------------------------------------------- |
-| Node.js      | LTS runtime (24.x or higher)                                      |
-| TypeScript   | Latest stable version (no beta)                                   |
-| Express.js   | Modular router architecture                                       |
-| PostgreSQL   | Relational database                                               |
-| Raw SQL      | Only `pool.query()` allowed (NO ORM, NO query builders, NO JOINs) |
-| bcrypt       | Password hashing (salt rounds: 8–12)                              |
-| jsonwebtoken | JWT-based authentication                                          |
+DevPulse is a backend system for managing bugs and feature requests with role-based access control, built using Node.js, Express, PostgreSQL, and raw SQL.
 
 ---
 
-## 👥 User Roles & Permissions
+## 🛠️ Tech Stack
 
-| Role        | Permissions                                                                                        |
-| ----------- | -------------------------------------------------------------------------------------------------- |
-| contributor | • Register & login<br>• Create issues<br>• View issues<br>• Update own issues                      |
-| maintainer  | • All contributor permissions<br>• Update any issue<br>• Delete any issue<br>• Change issue status |
+- Node.js (v24+)
+- TypeScript (stable release)
+- Express.js (modular architecture)
+- PostgreSQL (raw SQL only via `pool.query()`)
+- bcrypt (password hashing, salt 8–12)
+- jsonwebtoken (JWT authentication)
+
+> ⚠️ No ORMs, no query builders, and no SQL JOINs allowed.
 
 ---
 
-## 🔐 Authentication & Authorization
+## 👥 Roles
 
-### JWT Flow
+| Role        | Permissions                                         |
+| ----------- | --------------------------------------------------- |
+| contributor | Create issues, view issues, update own issues       |
+| maintainer  | Full access: update/delete any issue, manage status |
 
-Client → Login → Server validates credentials → JWT issued → Client sends token in:
+---
+
+## 🔐 Authentication
+
+JWT-based authentication:
+
 Authorization: <JWT_TOKEN>
 
-Server verifies:
+### Flow
 
-- Token validity
-- Expiry
-- Role permissions
+Credentials → Validate → Hash check → Issue JWT → Verify on each request
 
 ### Security Rules
 
-- Passwords are never returned or logged
-- Protected routes require valid JWT
-- Role-based access enforced on every privileged action
+- Passwords are never exposed
+- All protected routes require valid JWT
+- Role-based access enforced via middleware
+- JWT payload includes: `id`, `name`, `role`
 
 ---
 
 ## 🗄️ Database Schema
 
----
+### users
 
-### 👤 users
-
-| Field      | Description                                      |
-| ---------- | ------------------------------------------------ |
-| id         | Auto-increment primary key                       |
-| name       | Full name (required)                             |
-| email      | Unique login email (required)                    |
-| password   | Hashed password (never returned)                 |
-| role       | contributor or maintainer (default: contributor) |
-| created_at | Auto-generated timestamp                         |
-| updated_at | Auto-updated timestamp                           |
+- id (PK)
+- name (required)
+- email (unique, required)
+- password (hashed, hidden)
+- role (contributor | maintainer)
+- created_at
+- updated_at
 
 ---
 
-### 🐞 issues
+### issues
 
-| Field       | Description                      |
-| ----------- | -------------------------------- |
-| id          | Auto-increment primary key       |
-| title       | Max 150 chars                    |
-| description | Min 20 chars                     |
-| type        | bug or feature_request           |
-| status      | open, in_progress, resolved      |
-| reporter_id | User ID (validated in app logic) |
-| created_at  | Auto timestamp                   |
-| updated_at  | Auto timestamp                   |
+- id (PK)
+- title (max 150 chars)
+- description (min 20 chars)
+- type (bug | feature_request)
+- status (open | in_progress | resolved)
+- reporter_id (validated in app logic)
+- created_at
+- updated_at
 
 ---
 
-## 🌐 API Endpoints
+## 🌐 API Overview
 
 ---
 
-# 🔹 Authentication Module
+## 🔐 Auth
+
+### POST `/api/auth/signup`
+
+Register a new user.
+
+### POST `/api/auth/login`
+
+Authenticate user and return JWT.
 
 ---
 
-## 1. User Registration
+## 👤 Users
 
-**POST** `/api/auth/signup`
+### GET `/api/users` _(maintainer)_
 
-### Body
+List all users.
+
+### GET `/api/users/me`
+
+Get current user profile.
+
+### GET `/api/users/:id` _(maintainer)_
+
+Get user by ID.
+
+### PATCH `/api/users/:id`
+
+Update user (self or maintainer).
+
+### DELETE `/api/users/:id` _(maintainer)_
+
+Remove user.
+
+---
+
+## 🐞 Issues
+
+### POST `/api/issues`
+
+Create issue (authenticated users).
+
+### GET `/api/issues`
+
+Get all issues (supports `sort`, `type`, `status`).
+
+### GET `/api/issues/:id`
+
+Get single issue.
+
+### PATCH `/api/issues/:id`
+
+Update issue (role-based rules apply).
+
+### DELETE `/api/issues/:id`
+
+Delete issue (maintainer only).
+
+---
+
+## 📦 Standard Responses
+
+### Success
 
 ```json
 {
-  "name": "John Doe",
-  "email": "john.doe@devpulse.com",
-  "password": "securePassword123",
-  "role": "contributor"
-}
-
-2. User Login
-
-POST /api/auth/login
-
-Body
-
-{
-  "email": "john.doe@devpulse.com",
-  "password": "securePassword123"
-}
-
-👤 Users Module (NEW)
-3. Get All Users (Maintainer Only)
-
-GET /api/users
-
-Headers
-Authorization: <JWT_TOKEN>
-Response
-{
   "success": true,
-  "message": "Users retrieved successfully",
-  "data": [
-    {
-      "id": 1,
-      "name": "John Doe",
-      "email": "john.doe@devpulse.com",
-      "role": "contributor",
-      "created_at": "2026-01-20T09:00:00Z",
-      "updated_at": "2026-01-20T09:00:00Z"
-    }
-  ]
-}
-4. Get User Profile (Self)
-
-GET /api/users/me
-
-Headers
-Authorization: <JWT_TOKEN>
-Description
-
-Returns logged-in user's profile from decoded JWT.
-
-5. Get User by ID (Maintainer Only)
-
-GET /api/users/:id
-
-6. Update User (Self or Maintainer)
-
-PATCH /api/users/:id
-
-Body
-{
-  "name": "Updated Name",
-  "email": "newemail@devpulse.com",
-  "role": "maintainer"
-}
-7. Delete User (Maintainer Only)
-
-DELETE /api/users/:id
-
-🐞 Issues Module
-8. Create Issue
-
-POST /api/issues
-
-9. Get All Issues
-
-GET /api/issues?sort=newest&type=bug&status=open
-
-10. Get Single Issue
-
-GET /api/issues/:id
-
-11. Update Issue
-
-PATCH /api/issues/:id
-
-12. Delete Issue (Maintainer Only)
-
-DELETE /api/issues/:id
-
-🚨 Response Patterns
-Success Response
-{
-  "success": true,
-  "message": "Operation successful",
+  "message": "Success",
   "data": {}
 }
-Error Response
+Error
 {
   "success": false,
-  "message": "Error description",
-  "errors": "Optional details"
+  "message": "Error message",
+  "errors": "Details"
 }
 📊 HTTP Status Codes
 Code	Meaning
@@ -210,32 +164,29 @@ Code	Meaning
 403	Forbidden
 404	Not Found
 409	Conflict
-500	Internal Server Error
-🧠 Notes & Constraints
-❌ No ORMs allowed
-❌ No query builders allowed
-❌ No SQL JOINs
-✔ Use raw pool.query() only
-✔ Fetch related data manually in multiple queries
-✔ Use JWT payload: { id, name, role }
-🚀 Project Goal
+500	Server Error
+🧠 Constraints
+No ORMs or query builders
+No SQL JOINs
+Use raw pool.query() only
+Handle relationships manually
+Enforce JWT-based auth on protected routes
+🚀 Goal
 
-Build a clean, secure, role-based issue tracking API with strict backend constraints to demonstrate:
+Build a secure, scalable issue tracking API demonstrating:
 
-Authentication design
-Authorization logic
-Raw SQL handling
-Modular Express architecture
-Scalable API structure
+Authentication & authorization
+Role-based access control
+Raw SQL database handling
+Clean Express architecture
 
 ---
 
-If you want, I can also generate:
-- :contentReference[oaicite:0]{index=0}
-- :contentReference[oaicite:1]{index=1}
-- :contentReference[oaicite:2]{index=2}
-- :contentReference[oaicite:3]{index=3}
-- :contentReference[oaicite:4]{index=4}
+If you want next level polish, I can also turn this into:
+- 🟢 GitHub README with badges + logo
+- 🧱 Project folder structure
+- ⚙️ Production-ready backend architecture
+- 🧪 API testing collection (Postman)
 
 Just tell me 👍
 ```
