@@ -268,3 +268,8 @@ Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:45:00.619Z
 Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:46:19.112Z
 Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:46:44.388Z
 Method : POST - Url: /api/auth/signup - Time: 2026-06-07T18:47:07.751Z
+Method : GET - Url: /api/issues?status=in_progress - Time: 2026-06-08T14:35:32.432Z
+Method : POST - Url: /api/issues - Time: 2026-06-08T14:36:28.370Z
+Method : POST - Url: /api/issues - Time: 2026-06-08T14:36:42.526Z
+Method : DELETE - Url: /api/issues/28 - Time: 2026-06-08T14:37:07.245Z
+Method : POST - Url: /api/auth/login - Time: 2026-06-08T14:37:15.864Z
