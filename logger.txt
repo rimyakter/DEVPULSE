@@ -276,3 +276,10 @@ Method : POST - Url: /api/auth/login - Time: 2026-06-08T14:37:15.864Z
 Method : POST - Url: /api/auth/login - Time: 2026-06-08T14:38:38.588Z
 Method : GET - Url: /api/issues - Time: 2026-06-08T14:39:37.104Z
 Method : GET - Url: /favicon.ico - Time: 2026-06-08T14:39:37.746Z
+Method : GET - Url: /api/issues - Time: 2026-06-08T15:25:14.493Z
+Method : GET - Url: /api/issues - Time: 2026-06-08T15:25:23.675Z
+Method : GET - Url: /api/issues - Time: 2026-06-08T15:26:42.537Z
+Method : GET - Url: /api/issues/22 - Time: 2026-06-08T15:26:47.856Z
+Method : GET - Url: /api/login - Time: 2026-06-08T15:27:06.660Z
+Method : GET - Url: /api/auth/login - Time: 2026-06-08T15:27:21.953Z
+Method : GET - Url: /api/users - Time: 2026-06-08T15:27:33.652Z
