@@ -6,6 +6,7 @@ dotenv.config({
 const config = {
     connectionString: process.env.CONNECTION_STRING,
     port: process.env.PORT || 3000,
+    jwtSecret: process.env.JWT_SECRET,
 };
 export default config;
 //# sourceMappingURL=index.js.map
