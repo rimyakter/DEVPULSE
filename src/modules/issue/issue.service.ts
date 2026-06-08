@@ -71,11 +71,22 @@ const getAllIssuesFromDb = async (filters: IssueFilters) => {
 
   const userMap = new Map(usersResult.rows.map((u) => [u.id, u]));
 
-  // attach reporter to each issue
-  const enrichedIssues = issues.map(({ reporter_id, ...rest }) => ({
-    ...rest,
-    reporter: userMap.get(reporter_id) || null,
-  }));
+  const enrichedIssues = issues.map((issue) => {
+    const { reporter_id } = issue;
+
+    return {
+      id: issue.id,
+      title: issue.title,
+      description: issue.description,
+      type: issue.type,
+      status: issue.status,
+
+      reporter: userMap.get(reporter_id) || null,
+
+      created_at: issue.created_at,
+      updated_at: issue.updated_at,
+    };
+  });
 
   return { rows: enrichedIssues };
 };
@@ -112,11 +123,17 @@ const getSingleIssueFromDb = async (issueId: string) => {
 
   const reporter = userResult.rows[0] || null;
 
-  const { reporter_id, ...cleanIssue } = issue;
-
   return {
-    ...cleanIssue,
+    id: issue.id,
+    title: issue.title,
+    description: issue.description,
+    type: issue.type,
+    status: issue.status,
+
     reporter,
+
+    created_at: issue.created_at,
+    updated_at: issue.updated_at,
   };
 };
 
